@@ -1,0 +1,47 @@
+
+---
+- hosts: webservers
+  remote_user: root
+
+
+  tasks:
+    - name: Installing Apache, MYSQL Mariadb & PHP
+      yum: 
+        name: 
+          - epel-release
+          - httpd
+          - mariadb
+          - mariadb-server
+          - php 
+          - php-mysql
+        state: installed
+
+    - name: Enabling httpd service and start the service
+      service: 
+        name: httpd
+        enabled: yes
+        state: started
+
+    - name: Enabling mysql service and start the service
+      service: 
+        name: mariadb
+        enabled: yes
+        state: started
+            
+    
+    - name: Copying your php file in the /var/www/html
+      copy:
+        src: /Volumes/Software/Desktop-Working/ansible-basic/apache/files/index.php
+        dest: /var/www/html/index.php
+        force: yes
+        
+      notify: 
+          - restart httpd service
+
+  handlers:
+    - name: restart httpd service
+      service: 
+        name: httpd
+        state: restarted
+
+
